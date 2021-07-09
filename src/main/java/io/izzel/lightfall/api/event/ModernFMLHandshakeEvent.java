@@ -1,5 +1,7 @@
 package io.izzel.lightfall.api.event;
 
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 import net.md_5.bungee.protocol.packet.LoginPayloadRequest;
@@ -7,7 +9,14 @@ import net.md_5.bungee.protocol.packet.LoginPayloadResponse;
 
 public abstract class ModernFMLHandshakeEvent extends Event implements Cancellable {
 
+    private final ProxiedPlayer player;
+    private final ServerInfo serverInfo;
     private boolean cancelled = false;
+
+    protected ModernFMLHandshakeEvent(ProxiedPlayer player, ServerInfo serverInfo) {
+        this.player = player;
+        this.serverInfo = serverInfo;
+    }
 
     @Override
     public boolean isCancelled() {
@@ -19,11 +28,20 @@ public abstract class ModernFMLHandshakeEvent extends Event implements Cancellab
         this.cancelled = cancelled;
     }
 
+    public ProxiedPlayer getPlayer() {
+        return player;
+    }
+
+    public ServerInfo getTarget() {
+        return serverInfo;
+    }
+
     public static class Request extends ModernFMLHandshakeEvent {
 
         private final LoginPayloadRequest request;
 
-        public Request(LoginPayloadRequest request) {
+        public Request(ProxiedPlayer player, ServerInfo serverInfo, LoginPayloadRequest request) {
+            super(player, serverInfo);
             this.request = request;
         }
 
@@ -36,7 +54,8 @@ public abstract class ModernFMLHandshakeEvent extends Event implements Cancellab
 
         private final LoginPayloadResponse response;
 
-        public Response(LoginPayloadResponse response) {
+        public Response(ProxiedPlayer player, ServerInfo serverInfo, LoginPayloadResponse response) {
+            super(player, serverInfo);
             this.response = response;
         }
 
