@@ -39,6 +39,7 @@ public abstract class ModernFMLHandshakeEvent extends Event implements Cancellab
     public static class Request extends ModernFMLHandshakeEvent {
 
         private final LoginPayloadRequest request;
+        private LoginPayloadResponse response;
 
         public Request(ProxiedPlayer player, ServerInfo serverInfo, LoginPayloadRequest request) {
             super(player, serverInfo);
@@ -47,6 +48,15 @@ public abstract class ModernFMLHandshakeEvent extends Event implements Cancellab
 
         public LoginPayloadRequest getRequest() {
             return request;
+        }
+
+        public void setReply(LoginPayloadResponse response) {
+            this.setCancelled(true);
+            this.response = response;
+        }
+
+        public LoginPayloadResponse getResponse() {
+            return response;
         }
     }
 
